@@ -4,7 +4,6 @@ using NZWalks.API.CustomActionFilters;
 using NZWalks.API.Models.Domain;
 using NZWalks.API.Models.DTOs;
 using NZWalks.API.Repositories;
-using System.Linq.Expressions;
 
 namespace NZWalks.API.Controllers
 {
@@ -34,11 +33,11 @@ namespace NZWalks.API.Controllers
             return Ok(mapper.Map<WalkDto>(walkDomainModel));
         }
 
-        // POST: /api/walks
+        // POST: /api/walks?filterOn=Name&filterQuery=Track
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAll([FromQuery] string? filterOn, [FromQuery] string? filterQuery)
         {
-            var walksDomainModel = await walkRepository.GetAllAsync();
+            var walksDomainModel = await walkRepository.GetAllAsync(filterOn, filterQuery);
 
             return Ok(mapper.Map<List<WalkDto>>(walksDomainModel));
         }
