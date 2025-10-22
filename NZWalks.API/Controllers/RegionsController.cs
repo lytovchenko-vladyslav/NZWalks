@@ -11,8 +11,10 @@ using System.Text.Json;
 namespace NZWalks.API.Controllers
 {
     // https://localhost:7083/api/regions
-    [Route("api/[controller]")]
+    [Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]
+    [ApiVersion("1.0")]
+    [ApiVersion("2.0")]
     public class RegionsController : ControllerBase
     {
         private readonly NZWalksDbContext dbContext;
@@ -35,8 +37,9 @@ namespace NZWalks.API.Controllers
 
         // GET:  https://localhost:7083/api/regions
         [HttpGet]
+        [MapToApiVersion("1.0")]
         //TODO: Uncomment => [Authorize(Roles = "Reader,Writer")]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAllV1()
         {
             logger.LogInformation("GetAll-Regions Action Method was Invoked");
             List<Region> regionsDomain = await regionRepository.GetAllAsync();
@@ -46,8 +49,21 @@ namespace NZWalks.API.Controllers
         }
 
         [HttpGet]
+        [MapToApiVersion("2.0")]
+        [Authorize(Roles = "Reader,Writer")]
+        public async Task<IActionResult> GetAllV2()
+        {
+            logger.LogInformation("22222222222222222222222222222222222");
+            List<Region> regionsDomain = await regionRepository.GetAllAsync();
+
+            return Ok(mapper.Map<List<RegionDto>>(regionsDomain));
+        }
+
+        [HttpGet]
         [Route("{id:guid}")]
         [Authorize(Roles = "Reader,Writer")]
+        [ApiVersion("1.0")]
+        [ApiVersion("2.0")]
         public async Task<IActionResult> GetById(Guid id)
         {
             Region? regionDomain = await regionRepository.GetByIdAsync(id);
@@ -62,6 +78,8 @@ namespace NZWalks.API.Controllers
         [HttpPost]
         [ValidateModel]
         [Authorize(Roles = "Writer")]
+        [ApiVersion("1.0")]
+        [ApiVersion("2.0")]
         public async Task<IActionResult> Create([FromBody] AddRegionRequestDto addRegionRequestDto)
         {
             // Map or Convert DTO to Domain Model
@@ -83,6 +101,8 @@ namespace NZWalks.API.Controllers
         [Route("{id:Guid}")]
         [ValidateModel]
         [Authorize(Roles = "Writer")]
+        [ApiVersion("1.0")]
+        [ApiVersion("2.0")]
         public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] UpdateRegionRequestDto updateRegionRequestDto)
         {
             // Map Dto to Domain model
@@ -101,6 +121,8 @@ namespace NZWalks.API.Controllers
         [HttpDelete]
         [Route("{id:Guid}")]
         [Authorize(Roles = "Writer")]
+        [ApiVersion("1.0")]
+        [ApiVersion("2.0")]
         public async Task<IActionResult> Delete([FromRoute] Guid id)
         {
             var regionDomainModel = await regionRepository.DeleteAsync(id);
