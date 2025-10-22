@@ -6,37 +6,44 @@ using NZWalks.API.Data;
 using NZWalks.API.Models.Domain;
 using NZWalks.API.Models.DTOs;
 using NZWalks.API.Repositories;
+using System.Text.Json;
 
 namespace NZWalks.API.Controllers
 {
     // https://localhost:7083/api/regions
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
     public class RegionsController : ControllerBase
     {
         private readonly NZWalksDbContext dbContext;
         private readonly IRegionRepository regionRepository;
         private readonly IMapper mapper;
+        private readonly ILogger<RegionsController> logger;
 
-        public RegionsController(NZWalksDbContext dbContext, IRegionRepository regionRepository, IMapper mapper)
+        public RegionsController(
+            NZWalksDbContext dbContext,
+            IRegionRepository regionRepository,
+            IMapper mapper,
+            ILogger<RegionsController> logger)
         {
             this.dbContext = dbContext;
             this.regionRepository = regionRepository;
             this.mapper = mapper;
+            this.logger = logger;
         }
 
 
         // GET:  https://localhost:7083/api/regions
         [HttpGet]
-        [Authorize(Roles = "Reader,Writer")]
+        //TODO: Uncomment => [Authorize(Roles = "Reader,Writer")]
         public async Task<IActionResult> GetAll()
         {
+            logger.LogInformation("GetAll-Regions Action Method was Invoked");
             List<Region> regionsDomain = await regionRepository.GetAllAsync();
 
+            logger.LogInformation($"Finished GetAll-Regions request with data: {JsonSerializer.Serialize(regionsDomain)}");
             return Ok(mapper.Map<List<RegionDto>>(regionsDomain));
         }
-
 
         [HttpGet]
         [Route("{id:guid}")]
