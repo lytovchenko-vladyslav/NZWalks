@@ -50,7 +50,7 @@ namespace NZWalks.API.Controllers
 
         [HttpGet]
         [MapToApiVersion("2.0")]
-        [Authorize(Roles = "Reader,Writer")]
+        //TODO: Uncomment =>[Authorize(Roles = "Reader,Writer")]
         public async Task<IActionResult> GetAllV2()
         {
             logger.LogInformation("22222222222222222222222222222222222");
@@ -61,7 +61,7 @@ namespace NZWalks.API.Controllers
 
         [HttpGet]
         [Route("{id:guid}")]
-        [Authorize(Roles = "Reader,Writer")]
+        //TODO: Uncomment =>[Authorize(Roles = "Reader,Writer")]
         [ApiVersion("1.0")]
         [ApiVersion("2.0")]
         public async Task<IActionResult> GetById(Guid id)
@@ -77,7 +77,7 @@ namespace NZWalks.API.Controllers
         // POST: https://localhost:7083/api/regions
         [HttpPost]
         [ValidateModel]
-        [Authorize(Roles = "Writer")]
+        //TODO: Uncomment =>[Authorize(Roles = "Writer")]
         [ApiVersion("1.0")]
         [ApiVersion("2.0")]
         public async Task<IActionResult> Create([FromBody] AddRegionRequestDto addRegionRequestDto)
@@ -100,7 +100,7 @@ namespace NZWalks.API.Controllers
         [HttpPut]
         [Route("{id:Guid}")]
         [ValidateModel]
-        [Authorize(Roles = "Writer")]
+        //TODO: Uncomment => [Authorize(Roles = "Writer")]
         [ApiVersion("1.0")]
         [ApiVersion("2.0")]
         public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] UpdateRegionRequestDto updateRegionRequestDto)
@@ -120,7 +120,7 @@ namespace NZWalks.API.Controllers
         // PUT: https://localhost:7083/api/regions/{id}
         [HttpDelete]
         [Route("{id:Guid}")]
-        [Authorize(Roles = "Writer")]
+        //TODO: Uncomment => [Authorize(Roles = "Writer")]
         [ApiVersion("1.0")]
         [ApiVersion("2.0")]
         public async Task<IActionResult> Delete([FromRoute] Guid id)
